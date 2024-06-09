@@ -3,13 +3,18 @@ plugins {
     id 'war'
     id 'org.springframework.boot' version '3.2.6'
     id 'io.spring.dependency-management' version '1.1.5'
+    id 'jacoco'
 }
 
 group = 'com.jvk'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = '11'
+}
+
+jacoco {
+    toolVersion = "0.8.7"
 }
 
 configurations {
@@ -34,6 +39,21 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+
+test {
+    finalizedBy 'jacocoTestReport'
+}
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required.set(true)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir('jacocoHtml'))
+    }
+    finalizedBy 'jacocoTestCoverageVerification'
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
+
